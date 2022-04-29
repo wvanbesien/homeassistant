@@ -46,7 +46,7 @@ action:
     sequence:
       - service: media_player.media_play_pause
         target:
-          entity_id: !input 'speaker'
+          entity_id: !input 'speakers'
   - conditions:
     - '{{ command == ''step'' }}' 
     - '{{ args == [0, 1, 0, 0 ,0] }}'        
@@ -60,7 +60,7 @@ action:
     sequence:
       - service: media_player.media_previous_track
         target:
-          entity_id: !input 'speaker'
+          entity_id: !input 'speakers'
   - conditions:
     - '{{ command == ''move'' }}' 
     - '{{ args == [0, 195, 0, 0] }}'   
