@@ -53,7 +53,7 @@ action:
     sequence:
       - service: media_player.media_next_track
         target:
-          entity_id: !input 'speaker'
+          entity_id: !input 'speakers'
   - conditions:
     - '{{ command == ''step'' }}' 
     - '{{ args == [1, 1, 0, 0, 0] }}'       
