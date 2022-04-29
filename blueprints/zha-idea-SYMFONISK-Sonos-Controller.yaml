@@ -65,9 +65,9 @@ action:
     - '{{ command == ''move'' }}' 
     - '{{ args == [0, 195, 0, 0] }}'   
     sequence:
-    - repeat:
-        until:
-          - condition: '{{ command == ''stop'' }}'
+      - repeat:
+          until:
+            - condition: '{{ command == ''stop'' }}'
         sequence:
           - service: media_player.volume_up
             target:
