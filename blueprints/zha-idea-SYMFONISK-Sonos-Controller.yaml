@@ -4,18 +4,18 @@ blueprint:
   domain: automation
   input:
     controller:
-      name: 
-      description:
+      name: The SYMFONISK controller
+      description: Select the Ikea SYMFONISK controller
       selector:
         device:
-        integration: zha
-        model: SYMFONISK Sound Controller
+          integration: zha
+          model: SYMFONISK Sound Controller
     speakers:
-      name:
-      description:
+      name: Media player
+      description: Select the Media player, such as your Sonos soundbar. 
       selector:
-        action: {}
-        manufacturer: Sonos
+        entity:
+          domain: media_player
     speed:
       name: Speed
       description: how fast the volume changes in relation to the rotation time.
