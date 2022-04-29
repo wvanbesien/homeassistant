@@ -74,7 +74,7 @@ action:
               entity_id: !input 'speakers'
             data:
           - delay:
-              milliseconds: {{ var_speed }}
+              milliseconds: '{{ var_speed }}''
   - conditions:
     - '{{ command == ''move'' }}' 
     - '{{ args == [1, 195, 0, 0] }}'      
@@ -88,7 +88,7 @@ action:
               entity_id: !input 'speakers'
             data:
           - delay:
-              milliseconds: {{ var_speed }}
+              milliseconds: '{{ var_speed }}'
       
   
 
