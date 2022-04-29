@@ -66,8 +66,7 @@ action:
     - '{{ args == [0, 195, 0, 0] }}'   
     sequence:
       - repeat:
-          until:
-            - condition: '{{ command == ''stop'' }}'
+          while: []
           sequence:
             - service: media_player.volume_up
               target:
@@ -80,8 +79,7 @@ action:
     - '{{ args == [1, 195, 0, 0] }}'      
     sequence:
       - repeat:
-          until:
-            - condition: '{{ command == ''stop'' }}'
+          while: []
           sequence:
             - service: media_player.volume_down
               target:
