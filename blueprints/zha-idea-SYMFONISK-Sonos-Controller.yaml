@@ -1,0 +1,95 @@
+blueprint:
+  name: SYMFONISK controller with Sonos speakers
+  description: Control Sonos speakers using the Ikea SYMFONISK controller. 
+  domain: automation
+  input:
+    controller:
+      name: 
+      description:
+      selector:
+        device:
+        integration: zha
+        model: SYMFONISK Sound Controller
+    speakers:
+      name:
+      description:
+      selector:
+        action: {}
+        manufacturer: Sonos
+    speed:
+      name: Speed
+      description: how fast the volume changes in relation to the rotation time.
+      selector:
+        number:
+          min: 100.0
+          max: 1000.0
+          step: 100.0
+          unit_of_measurement: milliseconds
+          mode: slider
+      default: 500
+mode: restart
+max_exceeded: silent
+variables:
+  var_speed: !input 'speed'
+trigger:
+- platform: event
+  event_type: zha_event
+  event_data:
+    device_id: !input 'controller'
+action:
+- variables:
+    command: '{{ trigger.event.data.command }}'
+    args: '{{ trigger.event.data.args }}'
+- choose:
+  - conditions:  
+    - '{{ command == ''toggle'' }}'  
+    sequence:
+      - service: media_player.media_play_pause
+        target:
+          entity_id: !input 'speaker'
+  - conditions:
+    - '{{ command == ''step'' }}' 
+    - '{{ args == [0, 1, 0, 0 ,0] }}'        
+    sequence:
+      - service: media_player.media_next_track
+        target:
+          entity_id: !input 'speaker'
+  - conditions:
+    - '{{ command == ''step'' }}' 
+    - '{{ args == [1, 1, 0, 0, 0] }}'       
+    sequence:
+      - service: media_player.media_previous_track
+        target:
+          entity_id: !input 'speaker'
+  - conditions:
+    - '{{ command == ''move'' }}' 
+    - '{{ args == [0, 195, 0, 0] }}'   
+    sequence:
+    - repeat:
+        until:
+          - condition: '{{ command == ''stop'' }}'
+        sequence:
+          - service: media_player.volume_up
+            target:
+              entity_id: !input 'speakers'
+            data:
+          - delay:
+              milliseconds: {{ var_speed }}
+  - conditions:
+    - '{{ command == ''move'' }}' 
+    - '{{ args == [1, 195, 0, 0] }}'      
+    sequence:
+      - repeat:
+          until:
+            - condition: '{{ command == ''stop'' }}'
+        sequence:
+          - service: media_player.volume_down
+            target:
+              entity_id: !input 'speakers'
+            data:
+          - delay:
+              milliseconds: {{ var_speed }}
+      
+  
+
+

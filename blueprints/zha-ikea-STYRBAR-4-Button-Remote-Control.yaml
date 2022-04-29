@@ -1,0 +1,63 @@
+blueprint:
+  name: ZHA - IKEA STYRBAR - 4 Button Remote - OnOff Scene 
+  description: This automation simulates the use of the IKEA STYRBAR 4 Button Remote switch connected through ZHA.
+  domain: automation
+  input:
+    remote:
+      name: IKEA STYRBAR remote control
+      description: Select the remote control you wish to use.
+      selector:
+        device:
+          integration: zha
+          model: Remote Control N2
+    PowerOn_Press:
+      name: Power On
+      description: Power On button pressed
+      default: []
+      selector:
+        action: {}
+    PowerOff_Press:
+      name: Power Off 
+      description: Power Off button pressed
+      default: []
+      selector:
+        action: {}
+    Left_Press:
+      name: Left button
+      description: Left button pressed
+      default: []
+      selector:
+        action: {}
+    Right_Press:
+      name: Right button
+      description: Right button pressed
+      default: []
+      selector:
+        action: {}    
+mode: restart
+max_exceeded: silent
+variables:
+  device_id: !input 'remote'
+trigger:
+- platform: event
+  event_type: zha_event
+condition: '{{ trigger.event.data.device_id == device_id }}'
+action:
+- variables:
+    command: '{{ trigger.event.data.command }}'
+    args: '{{ trigger.event.data.args }}'
+- choose:
+  - conditions:
+    - '{{ command == ''on'' }}' 
+    sequence: !input 'PowerOn_Press'
+  - conditions:
+    - '{{ command == ''off'' }}'
+    sequence: !input 'PowerOff_Press'
+  - conditions: 
+    - '{{ command == ''press'' }}'
+    - '{{ args == [257, 13, 0] }}'
+    sequence: !input 'Left_Press'
+  - conditions: 
+    - '{{ command == ''press'' }}'
+    - '{{ args == [256, 13, 0] }}'
+    sequence: !input 'Right_Press'
