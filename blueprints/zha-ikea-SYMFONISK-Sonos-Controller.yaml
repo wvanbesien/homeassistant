@@ -1,6 +1,6 @@
 blueprint:
   name: ZHA - IKEA SYMFONISK controller with media player
-  description: Control Sonos speakers using the Ikea SYMFONISK controller. 
+  description: Control Sonos speakers using the Ikea SYMFONISK controller.
   domain: automation
   input:
     controller:
@@ -10,12 +10,14 @@ blueprint:
         device:
           integration: zha
           model: SYMFONISK Sound Controller
+          multiple: false
     speakers:
       name: Media player
-      description: Select the Media player, such as your Sonos soundbar. 
+      description: Select the Media player, such as your Sonos soundbar.
       selector:
         entity:
           domain: media_player
+          multiple: false
     speed:
       name: Speed
       description: how fast the volume changes in relation to the rotation time.
@@ -27,6 +29,7 @@ blueprint:
           unit_of_measurement: milliseconds
           mode: slider
       default: 500
+  source_url: https://github.com/wvanbesien/homeassistant/blob/main/blueprints/zha-ikea-SYMFONISK-Sonos-Controller.yaml
 mode: restart
 max_exceeded: silent
 variables:
@@ -41,53 +44,51 @@ action:
     command: '{{ trigger.event.data.command }}'
     args: '{{ trigger.event.data.args }}'
 - choose:
-  - conditions:  
-    - '{{ command == ''toggle'' }}'  
-    sequence:
-      - service: media_player.media_play_pause
-        target:
-          entity_id: !input 'speakers'
   - conditions:
-    - '{{ command == ''step'' }}' 
-    - '{{ args == [0, 1, 0, 0 ,0] }}'        
+    - '{{ command == ''toggle'' }}'
     sequence:
-      - service: media_player.media_next_track
-        target:
-          entity_id: !input 'speakers'
+    - service: media_player.media_play_pause
+      target:
+        entity_id: !input 'speakers'
   - conditions:
-    - '{{ command == ''step'' }}' 
-    - '{{ args == [1, 1, 0, 0, 0] }}'       
+    - '{{ command == ''step'' }}'
+    - '{{ args == "[<StepMode.Up: 0>, 1, 0, <bitmap8.0: 0>, <bitmap8.0: 0>]" }}'
     sequence:
-      - service: media_player.media_previous_track
-        target:
-          entity_id: !input 'speakers'
+    - service: media_player.media_next_track
+      target:
+        entity_id: !input 'speakers'
   - conditions:
-    - '{{ command == ''move'' }}' 
-    - '{{ args == [0, 195, 0, 0] }}'   
+    - '{{ command == ''step'' }}'
+    - '{{ args == "[<StepMode.Up: 1>, 1, 0, <bitmap8.0: 0>, <bitmap8.0: 0>]" }}'
     sequence:
-      - repeat:
-          while: []
-          sequence:
-            - service: media_player.volume_up
-              target:
-                entity_id: !input 'speakers'
-              data:
-            - delay:
-                milliseconds: '{{ var_speed }}'
+    - service: media_player.media_previous_track
+      target:
+        entity_id: !input 'speakers'
   - conditions:
-    - '{{ command == ''move'' }}' 
-    - '{{ args == [1, 195, 0, 0] }}'      
+    - condition: template
+      value_template: '{{ command == ''move'' }}'
+    - condition: template
+      value_template: '{{ args == "[<MoveMode.Up: 0>, 195, <bitmap8.0: 0>, <bitmap8.0: 0>]" }}'
     sequence:
-      - repeat:
-          while: []
-          sequence:
-            - service: media_player.volume_down
-              target:
-                entity_id: !input 'speakers'
-              data:
-            - delay:
-                milliseconds: '{{ var_speed }}'
-      
-  
-
-
+    - repeat:
+        while: []
+        sequence:
+        - service: media_player.volume_up
+          target:
+            entity_id: !input 'speakers'
+        - delay:
+            milliseconds: '{{ var_speed }}'
+  - conditions:
+    - condition: template
+      value_template: '{{ command == ''move'' }}'
+    - condition: template
+      value_template: '{{ args == "[<MoveMode.Down: 1>, 195, <bitmap8.0: 0>, <bitmap8.0: 0>]" }}'
+    sequence:
+    - repeat:
+        while: []
+        sequence:
+        - service: media_player.volume_down
+          target:
+            entity_id: !input 'speakers'
+        - delay:
+            milliseconds: '{{ var_speed }}'
