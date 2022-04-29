@@ -68,13 +68,13 @@ action:
       - repeat:
           until:
             - condition: '{{ command == ''stop'' }}'
-        sequence:
-          - service: media_player.volume_up
-            target:
-              entity_id: !input 'speakers'
-            data:
-          - delay:
-              milliseconds: '{{ var_speed }}''
+          sequence:
+            - service: media_player.volume_up
+              target:
+                entity_id: !input 'speakers'
+              data:
+            - delay:
+                milliseconds: '{{ var_speed }}'
   - conditions:
     - '{{ command == ''move'' }}' 
     - '{{ args == [1, 195, 0, 0] }}'      
@@ -82,13 +82,13 @@ action:
       - repeat:
           until:
             - condition: '{{ command == ''stop'' }}'
-        sequence:
-          - service: media_player.volume_down
-            target:
-              entity_id: !input 'speakers'
-            data:
-          - delay:
-              milliseconds: '{{ var_speed }}'
+          sequence:
+            - service: media_player.volume_down
+              target:
+                entity_id: !input 'speakers'
+              data:
+            - delay:
+                milliseconds: '{{ var_speed }}'
       
   
 
