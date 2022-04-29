@@ -1,5 +1,5 @@
 blueprint:
-  name: SYMFONISK controller with Sonos speakers
+  name: ZHA - IKEA SYMFONISK controller with media player
   description: Control Sonos speakers using the Ikea SYMFONISK controller. 
   domain: automation
   input:
