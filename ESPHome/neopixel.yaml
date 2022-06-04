@@ -1,0 +1,58 @@
+esphome:
+  name: esp32-2
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+
+wifi:
+  ssid: RyokanHyde
+  password: Liverpool
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "esp32-2"
+    password: "HcVI39jwAz80"
+
+captive_portal:
+
+light:
+- platform: neopixelbus
+  type: GRB
+  variant: WS2812
+  pin: GPIO27
+  num_leds: 120
+  name: "Office pixels"
+  method:
+    type: esp32_i2s
+  effects: 
+    - addressable_rainbow:
+    - addressable_rainbow:
+        name: Rainbow Effect
+        speed: 10
+        width: 50
+    - addressable_color_wipe:
+    - addressable_color_wipe:
+        name: Color wipe effect
+        colors:
+          - red: 100%
+            green: 100%
+            blue: 100%
+            num_leds: 1
+          - red: 0%
+            green: 0%
+            blue: 0%
+            num_leds: 1
+        add_led_interval: 100ms
+        reverse: false
+  
